@@ -3,7 +3,6 @@ use dotenv::from_filename;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
-pub mod app;
 pub mod evm;
 pub mod solana;
 

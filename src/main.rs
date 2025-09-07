@@ -1,17 +1,18 @@
 use anyhow::anyhow;
 use clap::Parser;
-use meow::app::{App, Command};
-use meow::evm::claim::evm_balance_check;
-use meow::evm::claim::evm_claim;
-use meow::evm::deposit_for_burn::evm_deposit;
-use meow::load_env;
-use meow::solana::constants::DestinationDomain;
-use meow::solana::irismsg::TxHash;
-use meow::solana::irismsg::get_messages;
-use meow::solana::programs::call_recieve_message;
-use meow::solana::svm_manager::{SOLANA_MANAGER, SolanaManager, init_solana_manager};
+use core_lib::evm::claim::evm_balance_check;
+use core_lib::evm::claim::evm_claim;
+use core_lib::evm::deposit_for_burn::evm_deposit;
+use core_lib::load_env;
+use core_lib::solana::constants::DestinationDomain;
+use core_lib::solana::irismsg::TxHash;
+use core_lib::solana::irismsg::get_messages;
+use core_lib::solana::programs::call_recieve_message;
+use core_lib::solana::svm_manager::{SOLANA_MANAGER, SolanaManager, init_solana_manager};
 use solana_sdk::signature::Signature;
 use web3::types::H256;
+pub mod app;
+use app::{App, Command};
 // use web3::types::H256;
 // #[tokio::main(flavor = "multi_thread")]
 #[tokio::main]
@@ -45,7 +46,7 @@ async fn main() {
             let manager: &SolanaManager = SOLANA_MANAGER.get().unwrap();
             let _ = manager.check_balance(1000).await.unwrap();
 
-            let deposit_for_burn_sig = meow::solana::programs::call_deposit_for_burn(
+            let deposit_for_burn_sig = core_lib::solana::programs::call_deposit_for_burn(
                 fixed_domain,
                 &to,
                 amount,
@@ -183,7 +184,7 @@ async fn main() {
             println!("USDC manually redeemed successfully!");
         }
         Command::SetEnv { path } => {
-            if let Err(e) = meow::set_env_path(path.as_str()) {
+            if let Err(e) = core_lib::set_env_path(path.as_str()) {
                 eprintln!("Error setting env path: {}", e);
             }
         }
