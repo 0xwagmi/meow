@@ -10,7 +10,15 @@ pub struct App {
 }
 
 #[derive(Parser, Debug)]
-#[command(version)]
+#[command(
+    name = "meow",
+    version = "0.1.3",
+    author = "oxwagmi",
+    about = "A CLI tool for bridging USDC between Solana and EVM chains",
+    long_about = "This tool allows you to bridge USDC between Solana and EVM chains, with options for manual redemption"
+)]
+
+
 pub struct Args {}
 
 #[derive(Debug, Parser)]
@@ -36,9 +44,9 @@ pub enum Command {
         // safe_format_usdc: bool,
         #[arg(long)]
         from_chain: String,
-        #[arg(long,default_value = "")]
+        #[arg(long,default_value = "", long_help = "receiving address on solana chain, default to FEE_PAYER on .env")]
         to: String,
-        #[arg(long, default_value = "")]
+        #[arg(long, default_value = "",long_help = "specify a custom rpc url ,defaults to respective rpcs on constants")]
         evm_remote_rpc: String,
         #[arg(long)]
         amount: u64,
