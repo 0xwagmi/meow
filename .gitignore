@@ -3,4 +3,4 @@
 test.json
 testm.json
 testmainnet.json
-/src/solana/cctp/
+/src/core-lib/src/solana/cctp/
