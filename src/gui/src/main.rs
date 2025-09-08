@@ -1,5 +1,5 @@
-use iced::widget::{button, column, text, Column};
-use iced::{Result, Task};
+use iced::widget::{button, column, text, container,row};
+use iced::{Result, Task,Fill,Element};
 use core_lib::solana::svm_manager::{SOLANA_MANAGER, SolanaManager, init_solana_manager};
 
 #[derive(Default)]
@@ -16,9 +16,21 @@ pub enum Message {
 }
 
 impl WalletApp {
-    pub fn view(&self) -> Column<Message> {
+    pub fn view(&self) -> Element<Message> {
+    //      container(
+    //     column![
+    //         "Top",
+    //         row!["Left", "Right"].spacing(10),
+    //         "Bottom"
+    //     ]
+    //     .spacing(10)
+    // )
+    // .padding(10)
+    // .center_x(Fill)
+    // .center_y(Fill)
+    // .into()
         let mut col = column![
-            text("Cctp stables ui").size(30),
+            text("Solana Wallet Info").size(30),
             button("Get Solana Wallet").on_press(Message::FetchData),
         ]
         .spacing(20);
@@ -27,7 +39,11 @@ impl WalletApp {
         col = col.push(text(format!("Address: {}", address)));
         col = col.push(text(format!("Balance: {} SOL", balance as f64 / 1_000_000_000.0)));
     }
-        col
+        container(col)
+        .padding(20)
+        .center_x(Fill)
+        .center_y(Fill)
+        .into()
     }
 
     pub fn update(&mut self, message: Message) -> Task<Message> {
@@ -48,7 +64,6 @@ impl WalletApp {
 }
 
 async fn fetch_solana_data() -> std::result::Result<(String, u64), Box<dyn std::error::Error + Send + Sync>> {
-        init_solana_manager(true).unwrap();
     let manager: &SolanaManager = SOLANA_MANAGER.get().ok_or("Solana manager not initialized")?;
     
     let payer = manager.payer_pubkey().to_string();
@@ -59,8 +74,9 @@ async fn fetch_solana_data() -> std::result::Result<(String, u64), Box<dyn std::
 
 #[tokio::main]
 async fn main() -> Result {
-        dotenv::dotenv().ok();
-        iced::application("Bridge Wallet", WalletApp::update, WalletApp::view).run()
+    dotenv::dotenv().ok();
+    init_solana_manager(true).unwrap();
+        iced::application("Meow UI", WalletApp::update, WalletApp::view).run()
 }
 // fn theme(state: &State) -> Theme {
 //     Theme::TokyoNight
