@@ -32,7 +32,7 @@ Make sure you have **Rust** installed:
 #### Quick installation
 
 ```sh
-cargo install --git https://github.com/Oxwagmi/meow.git --tag v0.1.2
+cargo install --git https://github.com/0xwagmi/meow.git --tag v0.1.2
 meow set-env --path ~/urenvpath/.env    
 ```
 create a .env  like env.example 
@@ -47,7 +47,7 @@ Usage: meow <COMMAND>
 #### Mannual installation
 build the binary manually:
 
-git clone https://github.com/Oxwagmi/meow.git
+git clone https://github.com/0xwagmi/meow.git
 
 ```sh
 cargo build -r
