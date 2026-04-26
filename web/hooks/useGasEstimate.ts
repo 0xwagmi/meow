@@ -72,7 +72,7 @@ export function useSolToEvmGasEstimate(chainId: number | undefined): GasEstimate
 
   if (loading) return { solanaFeeLamports, loading: true, error: false };
   if (bothFailed) return { solanaFeeLamports: 0, loading: false, error: true };
-  if (evmError) return { solanaFeeLamports, loading: false, error: false };
+  if (evmError || !gasPrice) return { solanaFeeLamports, loading: false, error: false };
 
   return {
     evmClaimEth: formatEther(gasPrice * GAS.receiveMessage),
@@ -97,7 +97,7 @@ export function useEvmToSolGasEstimate(
 
   if (loading) return { solanaFeeLamports, loading: true, error: false };
   if (bothFailed) return { solanaFeeLamports: 0, loading: false, error: true };
-  if (evmError) return { solanaFeeLamports, loading: false, error: false };
+  if (evmError || !gasPrice) return { solanaFeeLamports, loading: false, error: false };
 
   return {
     evmDepositEth: formatEther(gasPrice * GAS.depositForBurn),
