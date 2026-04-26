@@ -15,7 +15,7 @@ clap = { version = "4.5.32", features = ["derive"] }
 curve25519-dalek = { git = "https://github.com/anza-xyz/curve25519-dalek.git", rev = "b500cdc2a920cd5bff9e2dd974d7b97349d61464" }
 
 [workspace]
-members = [ "src/core-lib","src/tui"]
+members = [ "src/core-lib"]
 
 [workspace.dependencies]
 core-lib = {path="./src/core-lib"}
