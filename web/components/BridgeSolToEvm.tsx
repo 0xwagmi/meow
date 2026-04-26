@@ -82,7 +82,7 @@ export function BridgeSolToEvm() {
         </div>
 
         {amount && parseFloat(amount) > 0 && (
-          <BridgeSummary direction="sol-to-evm" amount={amount} chainId={chainId} />
+          <BridgeSummary direction="sol-to-evm" amount={amount} chainId={chainId} evmConnected={!!evmAddress} solanaConnected={!!publicKey} />
         )}
 
         {wrongNetwork && (

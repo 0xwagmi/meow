@@ -42,27 +42,33 @@ export function formatEthGas(eth: string) {
   return n.toFixed(6) + " ETH";
 }
 
-function useSolanaRent(bytes: number): { lamports: number; loading: boolean; error: boolean } {
+function useSolanaRent(bytes: number, enabled: boolean): { lamports: number; loading: boolean; error: boolean } {
   const { connection } = useConnection();
   const [lamports, setLamports] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      setLamports(0);
+      setError(false);
+      return;
+    }
     setLoading(true);
     setError(false);
     connection
       .getMinimumBalanceForRentExemption(bytes)
       .then((val) => { setLamports(val); setLoading(false); })
       .catch(() => { setError(true); setLoading(false); });
-  }, [connection, bytes]);
+  }, [connection, bytes, enabled]);
 
   return { lamports, loading, error };
 }
 
-export function useSolToEvmGasEstimate(chainId: number | undefined): GasEstimate {
-  const { data: gasPrice, isLoading: evmLoading } = useGasPrice({ chainId });
-  const { lamports: eventRent, loading: rentLoading, error: rentError } = useSolanaRent(DEPOSIT_EVENT_ACCOUNT_BYTES);
+export function useSolToEvmGasEstimate(chainId: number | undefined, enabled: boolean): GasEstimate {
+  const { data: gasPrice, isLoading: evmLoading } = useGasPrice({ chainId, query: { enabled } });
+  const { lamports: eventRent, loading: rentLoading, error: rentError } = useSolanaRent(DEPOSIT_EVENT_ACCOUNT_BYTES, enabled);
 
   const loading = evmLoading || rentLoading;
   const evmError = !evmLoading && !gasPrice;
@@ -84,10 +90,11 @@ export function useSolToEvmGasEstimate(chainId: number | undefined): GasEstimate
 
 export function useEvmToSolGasEstimate(
   chainId: number | undefined,
-  needsApproval: boolean
+  needsApproval: boolean,
+  enabled: boolean
 ): GasEstimate {
-  const { data: gasPrice, isLoading: evmLoading } = useGasPrice({ chainId });
-  const { lamports: ataRent, loading: rentLoading, error: rentError } = useSolanaRent(TOKEN_ACCOUNT_BYTES);
+  const { data: gasPrice, isLoading: evmLoading } = useGasPrice({ chainId, query: { enabled } });
+  const { lamports: ataRent, loading: rentLoading, error: rentError } = useSolanaRent(TOKEN_ACCOUNT_BYTES, enabled);
 
   const loading = evmLoading || rentLoading;
   const evmError = !evmLoading && !gasPrice;

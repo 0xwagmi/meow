@@ -106,6 +106,8 @@ export function BridgeEvmToSol() {
             amount={amount}
             chainId={chainId}
             needsApproval={!!evmAddress && (allowance as bigint) < parseUnits(amount || "0", 6)}
+            evmConnected={!!evmAddress}
+            solanaConnected={!!publicKey}
           />
         )}
 

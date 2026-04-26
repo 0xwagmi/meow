@@ -12,6 +12,8 @@ interface Props {
   amount: string;
   chainId: number | undefined;
   needsApproval?: boolean;
+  evmConnected: boolean;
+  solanaConnected: boolean;
 }
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
@@ -31,9 +33,10 @@ function ZeroBadge({ label }: { label: string }) {
   );
 }
 
-export function BridgeSummary({ direction, amount, chainId, needsApproval = false }: Props) {
-  const solToEvm = useSolToEvmGasEstimate(direction === "sol-to-evm" ? chainId : undefined);
-  const evmToSol = useEvmToSolGasEstimate(direction === "evm-to-sol" ? chainId : undefined, needsApproval);
+export function BridgeSummary({ direction, amount, chainId, needsApproval = false, evmConnected, solanaConnected }: Props) {
+  const walletsReady = evmConnected && solanaConnected;
+  const solToEvm = useSolToEvmGasEstimate(direction === "sol-to-evm" ? chainId : undefined, walletsReady && direction === "sol-to-evm");
+  const evmToSol = useEvmToSolGasEstimate(direction === "evm-to-sol" ? chainId : undefined, needsApproval, walletsReady && direction === "evm-to-sol");
   const estimate = direction === "sol-to-evm" ? solToEvm : evmToSol;
 
   const parsedAmount = parseFloat(amount);
@@ -66,7 +69,9 @@ export function BridgeSummary({ direction, amount, chainId, needsApproval = fals
           Network gas (paid to validators, not meow)
         </p>
 
-        {estimate.loading ? (
+        {!walletsReady ? (
+          <p className="text-xs text-slate-500">Connect both wallets to see gas estimates</p>
+        ) : estimate.loading ? (
           <p className="text-xs text-slate-500 animate-pulse">Fetching gas price…</p>
         ) : (
           <>
