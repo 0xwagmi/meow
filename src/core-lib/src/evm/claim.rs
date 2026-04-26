@@ -57,7 +57,7 @@ pub async fn evm_claim(
         .send_raw_transaction(signed_tx.raw_transaction)
         .await?;
 
-    println!("✅ Destination chain txn sent: {:?}", tx_hash);
+    println!("Destination chain txn sent: {:?}", tx_hash);
 
     Ok(tx_hash)
 }
